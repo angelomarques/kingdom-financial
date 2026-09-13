@@ -19,7 +19,9 @@ type MockFile = {
   alerts: BudgetAlert[];
 };
 
-const DATA_PATH = path.join(process.cwd(), ".data/ledger.json");
+const DATA_PATH = process.env.VERCEL
+  ? path.join("/tmp", "kingdom-financial-ledger.json")
+  : path.join(process.cwd(), ".data/ledger.json");
 
 let queue: Promise<unknown> = Promise.resolve();
 
