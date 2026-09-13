@@ -1,10 +1,8 @@
 "use client";
 
 import { useActionState, type ReactNode } from "react";
-import {
-  idleActionState,
-  type ActionState,
-} from "@/app/actions";
+import type { ActionState } from "@/lib/finance/action-state";
+import { idleActionState } from "@/lib/finance/action-state";
 
 export function ActionForm({
   action,

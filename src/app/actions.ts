@@ -4,13 +4,8 @@ import { revalidatePath } from "next/cache";
 import { capture } from "@/lib/analytics";
 import { currentYearMonth } from "@/lib/finance/month";
 import { isYearMonth, parseEuroToCents } from "@/lib/finance/money";
+import type { ActionState } from "@/lib/finance/action-state";
 import { getStore } from "@/lib/finance/store";
-export type ActionState =
-  | { status: "idle" }
-  | { status: "ok" }
-  | { status: "error"; message: string };
-
-export const idleActionState: ActionState = { status: "idle" };
 
 export async function savePlan(
   _prev: ActionState,
