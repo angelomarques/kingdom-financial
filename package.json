@@ -8,6 +8,8 @@
     "start": "next start --port 43127 --hostname 127.0.0.1",
     "lint": "eslint",
     "test": "playwright test",
+    "test:e2e": "playwright test",
+    "check:no-useeffect": "bash scripts/check-no-useeffect.sh",
     "icons": "python3 scripts/make-icons.py"
   },
   "dependencies": {
