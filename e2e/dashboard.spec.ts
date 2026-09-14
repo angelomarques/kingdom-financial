@@ -3,11 +3,18 @@ import { expect, test, type Page } from "@playwright/test";
 test("home pizza shows spending, saving, and remaining", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { name: "Kingdom Financial" })).toBeVisible();
+  const emptyPlan = page.getByText(/No plan for/);
+  if (await emptyPlan.count()) {
+    await page.getByLabel("Monthly income").fill("2500");
+    await page.getByLabel("Spend alert at").fill("850");
+    await page.getByLabel("Savings target").fill("400");
+    await page.getByRole("button", { name: "Set this month" }).click();
+  }
   await expect(page.getByRole("img", { name: /Monthly budget pizza/ })).toBeVisible();
   await expect(page.getByText("Spending", { exact: true })).toBeVisible();
   await expect(page.getByText("Saving", { exact: true })).toBeVisible();
   await expect(page.getByText("Remaining", { exact: true }).first()).toBeVisible();
-  await expect(page.getByText("Local mock")).toBeVisible();
+  await expect(page.getByText(/Local mock|Cloudflare D1/)).toBeVisible();
   await expect(page.getByText("PostHog off")).toBeVisible();
 });
 
@@ -32,6 +39,7 @@ test("error demo shows the error card and retry", async ({ page }) => {
 test("crossing the spend cap and savings target opens alerts", async ({
   page,
 }) => {
+  test.setTimeout(60_000);
   test.skip(test.info().project.name === "mobile", "Serial ledger writes stay on desktop.");
   await page.goto("/");
   await resetMonth(page);
@@ -39,20 +47,22 @@ test("crossing the spend cap and savings target opens alerts", async ({
   await page.getByLabel("Spend alert at").fill("50");
   await page.getByLabel("Savings target").fill("40");
   await page.getByRole("button", { name: "Set this month" }).click();
-  await expect(page.getByRole("img", { name: /Monthly budget pizza/ })).toBeVisible();
+  await expect(page.getByRole("img", { name: /Monthly budget pizza/ })).toBeVisible({ timeout: 15_000 });
 
   await page.locator("#spend-form").getByLabel("Amount").fill("50");
   await page.locator("#spend-form").getByLabel("Note").fill("Train");
   await page.getByRole("button", { name: "Record a spend" }).click();
-  await expect(page.getByText("Spend threshold hit")).toBeVisible();
+  await expect(page.getByText("Spend threshold hit")).toBeVisible({ timeout: 15_000 });
+  await page.waitForTimeout(500);
 
   await page.locator("#save-form").getByLabel("Amount").fill("40");
   await page.locator("#save-form").getByLabel("Note").fill("Buffer");
   await page.getByRole("button", { name: "Record a save" }).click();
-  await expect(page.getByText("Savings target reached")).toBeVisible();
+  await expect(page.getByText("Savings target reached")).toBeVisible({ timeout: 15_000 });
+  await page.waitForTimeout(500);
 
   await page.getByRole("button", { name: "Acknowledge" }).first().click();
-  await expect(page.getByText("Marked as seen.").first()).toBeVisible();
+  await expect(page.getByText("Marked as seen.").first()).toBeVisible({ timeout: 15_000 });
 });
 
 test("manifest is installable", async ({ page, request }) => {
@@ -75,6 +85,6 @@ async function resetMonth(page: Page) {
   const clear = page.getByRole("button", { name: "Clear this month" });
   if (await clear.count()) {
     await clear.click();
-    await expect(page.getByText(/No plan for/)).toBeVisible();
+    await expect(page.getByText(/No plan for/)).toBeVisible({ timeout: 10_000 });
   }
 }

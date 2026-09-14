@@ -40,6 +40,10 @@ jobs:
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
       - name: Run Playwright
+        env:
+          BETTER_AUTH_SECRET: ci-test-auth-secret-32-chars-minimum-ok
+          BETTER_AUTH_URL: http://127.0.0.1:43129
+          NEXT_PUBLIC_APP_URL: http://127.0.0.1:43129
         run: |
           if [ -f pnpm-lock.yaml ]; then
             pnpm test

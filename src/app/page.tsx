@@ -58,7 +58,15 @@ export default async function HomePage({
             unallocated from your income.
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <Link
+            href="/session"
+            className="size-8 rounded-full bg-zinc-800 border border-zinc-700/80 flex items-center justify-center text-zinc-300 hover:text-foreground hover:border-zinc-500 transition-colors shadow-xs"
+            title="User Profile & Session"
+            aria-label="User profile and session"
+          >
+            <span className="text-xs font-semibold">ÂM</span>
+          </Link>
           <Badge variant="secondary">{formatYearMonth(yearMonth)}</Badge>
           <Badge variant="outline">
             {snapshot.source === "d1" ? "Cloudflare D1" : "Local mock"}

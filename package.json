@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --port 43127 --hostname 127.0.0.1",
+    "dev": "next dev --port 43129 --hostname 127.0.0.1",
     "build": "next build",
-    "start": "next start --port 43127 --hostname 127.0.0.1",
+    "start": "next start --port 43129 --hostname 127.0.0.1",
     "lint": "eslint",
     "test": "playwright test",
     "test:e2e": "playwright test",
@@ -13,8 +13,11 @@
     "icons": "python3 scripts/make-icons.py"
   },
   "dependencies": {
+    "@better-auth/drizzle-adapter": "^1.7.4",
+    "better-auth": "^1.7.4",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.3.0",
+    "drizzle-orm": "^0.45.2",
     "lucide-react": "^1.45.0",
     "next": "16.3.5",
     "posthog-node": "^5.21.2",
@@ -30,6 +33,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "drizzle-kit": "^0.31.10",
     "eslint": "^9",
     "eslint-config-next": "16.3.5",
     "tailwindcss": "^4",
