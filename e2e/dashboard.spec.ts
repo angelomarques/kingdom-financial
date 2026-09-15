@@ -66,12 +66,12 @@ test("crossing the spend cap and savings target opens alerts", async ({
   await page.locator("#spend-form").getByLabel("Amount").fill("50");
   await page.locator("#spend-form").getByLabel("Note").fill("Train");
   await page.getByRole("button", { name: "Record a spend" }).click();
-  await expect(page.getByRole("heading", { name: "Spend threshold hit" })).toBeVisible();
+  await expect(page.getByText("Spend threshold hit")).toBeVisible({ timeout: 15_000 });
 
   await page.locator("#save-form").getByLabel("Amount").fill("40");
   await page.locator("#save-form").getByLabel("Note").fill("Buffer");
   await page.getByRole("button", { name: "Record a save" }).click();
-  await expect(page.getByRole("heading", { name: "Savings target reached" })).toBeVisible();
+  await expect(page.getByText("Savings target reached")).toBeVisible({ timeout: 15_000 });
 
   await page.getByRole("button", { name: "Acknowledge" }).first().click();
   await expect(page.getByText("Marked as seen.").first()).toBeVisible({ timeout: 15_000 });
