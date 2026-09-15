@@ -3,8 +3,8 @@ import { expect, test } from "@playwright/test";
 test.describe("Authentication and Session Flow", () => {
   const uniqueId = Date.now();
   const testUser = {
-    name: "Angelo Marques",
-    email: `angelo.test.${uniqueId}@example.com`,
+    name: "Test User",
+    email: `user.test.${uniqueId}@example.com`,
     password: "Password123!",
   };
 

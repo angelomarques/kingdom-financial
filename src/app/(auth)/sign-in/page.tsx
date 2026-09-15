@@ -33,7 +33,7 @@ export default function SignInPage() {
               id="email"
               name="email"
               type="email"
-              placeholder="angelo@example.com"
+              placeholder="you@example.com"
               required
               autoComplete="email"
             />

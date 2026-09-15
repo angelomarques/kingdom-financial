@@ -33,7 +33,7 @@ export default function SignUpPage() {
               id="name"
               name="name"
               type="text"
-              placeholder="Ângelo Emanuel Marques"
+              placeholder="Your full name"
               required
               autoComplete="name"
             />
@@ -44,7 +44,7 @@ export default function SignUpPage() {
               id="email"
               name="email"
               type="email"
-              placeholder="angelo@example.com"
+              placeholder="you@example.com"
               required
               autoComplete="email"
             />

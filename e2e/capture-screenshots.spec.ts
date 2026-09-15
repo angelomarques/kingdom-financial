@@ -32,7 +32,7 @@ test.describe("Capture Auth & Session Screenshots", () => {
     await capture(page, "sign-up.png");
 
     const email = `angelo.evidence.${Date.now()}@example.com`;
-    await page.getByLabel("Full Name").fill("Ângelo Emanuel Marques");
+    await page.getByLabel("Full Name").fill("Test User");
     await page.getByLabel("Email").fill(email);
     await page.getByLabel("Password").fill("Password123!");
     await page.getByRole("button", { name: "Create account" }).click();
