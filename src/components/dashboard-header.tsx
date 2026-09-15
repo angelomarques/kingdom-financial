@@ -76,15 +76,14 @@ export function DashboardHeader({
           </Badge>
         </div>
 
-        {/* Avatar Placeholder Circle */}
-        <div
-          className="size-8 rounded-full bg-zinc-800 border border-zinc-700/80 flex items-center justify-center text-zinc-300 shadow-sm shrink-0"
-          title="Ângelo Emanuel Marques"
-          role="img"
-          aria-label="User avatar"
+        <Link
+          href="/session"
+          className="size-8 rounded-full bg-zinc-800 border border-zinc-700/80 flex items-center justify-center text-zinc-300 hover:text-foreground hover:border-zinc-500 transition-colors shadow-sm shrink-0"
+          title="User Profile & Session"
+          aria-label="User profile and session"
         >
           <User className="size-4" />
-        </div>
+        </Link>
       </div>
     </header>
   );

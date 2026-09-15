@@ -1,0 +1,18 @@
+---
+description: Always look up official docs (prefer llms.txt) instead of reading node_modules
+alwaysApply: true
+---
+
+# Package docs: prefer `llms.txt`, not `node_modules`
+
+When using a library, framework, or tool, **always** look up its official documentation — prefer `llms.txt` on the docs site — **instead of** reading `node_modules`. Most libraries ship `llms.txt` for this.
+
+Do **not** browse, search, or read inside `node_modules/` for APIs, patterns, config, breaking changes, or examples (no `list_dir`, `grep`, or `read_file` there for that purpose). Vendored source is noisy, version-specific, and easy to misread.
+
+**How to look it up**
+
+1. Fetch `https://<docs-host>/llms.txt` (or `llms-full.txt` when that is the advertised index).
+2. If there is no `llms.txt`, fetch the official docs site or search the web for it.
+3. Still **not** `node_modules`.
+
+**Okay without `node_modules`:** this repo's source, `package.json` / lockfile for versions, generated config in the repo, and a path under `node_modules` the user explicitly asked you to inspect.

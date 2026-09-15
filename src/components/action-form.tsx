@@ -1,21 +1,28 @@
 "use client";
 
 import { useActionState, type ReactNode } from "react";
-import type { ActionState } from "@/lib/finance/action-state";
-import { idleActionState } from "@/lib/finance/action-state";
 
-export function ActionForm({
+export type BaseActionState =
+  | { status: "idle" }
+  | { status: "ok" | "success"; message?: string }
+  | { status: "error"; message: string };
+
+const defaultIdleState: BaseActionState = { status: "idle" };
+
+export function ActionForm<T extends BaseActionState = BaseActionState>({
   action,
   children,
   className,
   id,
+  initialState = defaultIdleState as Awaited<T>,
 }: {
-  action: (state: ActionState, formData: FormData) => Promise<ActionState>;
+  action: (state: Awaited<T>, formData: FormData) => T | Promise<T>;
   children: ReactNode;
   className?: string;
   id?: string;
+  initialState?: Awaited<T>;
 }) {
-  const [state, formAction] = useActionState(action, idleActionState);
+  const [state, formAction] = useActionState(action, initialState);
 
   return (
     <form id={id} action={formAction} className={className}>

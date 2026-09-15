@@ -1,0 +1,9 @@
+# Cloudflare D1 configuration for Kingdom Financial
+name = "kingdom-financial"
+compatibility_date = "2025-09-14"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "kingdom-financial"
+database_id = "600077c8-acb0-47a1-b9c1-84e2df7dc1dd"
+migrations_dir = "drizzle"
