@@ -3,7 +3,14 @@ import { expect, test, type Page } from "@playwright/test";
 test("home pizza shows spending, saving, and remaining", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("link", { name: "Kingdom Financial" })).toBeVisible();
-  await expect(page.getByRole("img", { name: /Monthly budget pizza/ })).toBeVisible();
+  const emptyPlan = page.getByText(/No plan for/);
+  if (await emptyPlan.count()) {
+    await page.getByLabel("Monthly income").fill("2500");
+    await page.getByLabel("Spend alert at").fill("850");
+    await page.getByLabel("Savings target").fill("400");
+    await page.getByRole("button", { name: "Set this month" }).click();
+  }
+  await expect(page.getByRole("img", { name: /Monthly budget pizza/ })).toBeVisible({ timeout: 15_000 });
   await expect(page.getByText("Spending", { exact: true })).toBeVisible();
   await expect(page.getByText("Saving", { exact: true })).toBeVisible();
   await expect(page.getByText("Remaining", { exact: true }).first()).toBeVisible();
@@ -66,12 +73,12 @@ test("crossing the spend cap and savings target opens alerts", async ({
   await page.locator("#spend-form").getByLabel("Amount").fill("50");
   await page.locator("#spend-form").getByLabel("Note").fill("Train");
   await page.getByRole("button", { name: "Record a spend" }).click();
-  await expect(page.getByText("Spend threshold hit")).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByText("Spend threshold hit").first()).toBeVisible({ timeout: 15_000 });
 
   await page.locator("#save-form").getByLabel("Amount").fill("40");
   await page.locator("#save-form").getByLabel("Note").fill("Buffer");
   await page.getByRole("button", { name: "Record a save" }).click();
-  await expect(page.getByText("Savings target reached")).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByText("Savings target reached").first()).toBeVisible({ timeout: 15_000 });
 
   await page.getByRole("button", { name: "Acknowledge" }).first().click();
   await expect(page.getByText("Marked as seen.").first()).toBeVisible({ timeout: 15_000 });
