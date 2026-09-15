@@ -34,7 +34,7 @@ Auth and a second database are out of scope. Ângelo is the only actor.
 
 ## Agents
 
-The main coder is the project-local Cursor subagent at `.cursor/agents/main-coder.md`. It uses `gemini-3.8-flash-high`, the strongest Google/Gemini ID currently listed for Cursor agents. Delegate implementation to it. Do not send it GitHub or Vercel work.
+The main coder is the project-local Cursor subagent at `.cursor/agents/main-coder.md`. It uses `composer-2.5`, Cursor's listed Composer 2.5 slug. Delegate implementation to it. Do not send it GitHub or Vercel work.
 
 ## Later, not now
 
