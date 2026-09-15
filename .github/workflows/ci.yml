@@ -44,6 +44,10 @@ jobs:
           BETTER_AUTH_SECRET: ci-test-auth-secret-32-chars-minimum-ok
           BETTER_AUTH_URL: http://127.0.0.1:43129
           NEXT_PUBLIC_APP_URL: http://127.0.0.1:43129
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_D1_DATABASE_ID: ${{ secrets.CLOUDFLARE_D1_DATABASE_ID }}
+          CLOUDFLARE_D1_TOKEN: ${{ secrets.CLOUDFLARE_D1_TOKEN }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
           if [ -f pnpm-lock.yaml ]; then
             pnpm test

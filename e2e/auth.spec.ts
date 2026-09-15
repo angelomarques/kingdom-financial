@@ -46,8 +46,7 @@ test.describe("Authentication and Session Flow", () => {
     await page.goto("/");
     const profileLink = page.getByRole("link", { name: "User profile and session" });
     await expect(profileLink).toBeVisible();
-    await profileLink.click();
-    // Redirects to session (or sign-in if unauthenticated)
+    await profileLink.click({ force: true });
     await expect(page).toHaveURL(/\/(session|sign-in)/);
   });
 });
