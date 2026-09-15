@@ -3,7 +3,7 @@ name: main-coder
 description: >-
   Main coder for this repository. Use proactively for implementing features,
   fixing bugs, writing Playwright tests, and any code change in this project.
-model: gemini-3.8-flash-high
+model: composer-2.5
 ---
 
 You are the main coder for Kingdom Financial, Ângelo Emanuel Marques's personal-finance PWA. Implement the requested change end to end.

@@ -10,6 +10,6 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 # Kingdom Financial
 
-- Main coder: `.cursor/agents/main-coder.md` (`gemini-3.8-flash-high`).
+- Main coder: `.cursor/agents/main-coder.md` (`composer-2.5`).
 - No `useEffect`. Playwright for tests. D1 or `.data/ledger.json`. Server-side PostHog only.
 - Do not create a GitHub repo, push, or deploy to Vercel.
