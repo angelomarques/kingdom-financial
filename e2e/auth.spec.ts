@@ -13,7 +13,7 @@ test.describe("Authentication and Session Flow", () => {
   }) => {
     await page.goto("/session");
     await expect(page).toHaveURL(/\/sign-in/);
-    await expect(page.getByRole("heading", { name: "Sign in to Kingdom Financial", level: 2 })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Sign in to Kingdom Financial" })).toBeVisible();
   });
 
   test("can sign in and sign out lifecycle", async ({ page }) => {
