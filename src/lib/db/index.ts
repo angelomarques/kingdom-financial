@@ -25,9 +25,17 @@ export function d1ConfigFromEnv(
 
 let cachedDb: AppDb | null = null;
 
+function missingD1EnvMessage(): string {
+  return (
+    "Missing Cloudflare D1 HTTP credentials. Set CLOUDFLARE_ACCOUNT_ID, " +
+    "CLOUDFLARE_D1_DATABASE_ID, and CLOUDFLARE_D1_TOKEN (or CLOUDFLARE_API_TOKEN) " +
+    "for the kingdom-financial database only (600077c8-acb0-47a1-b9c1-84e2df7dc1dd)."
+  );
+}
+
 /**
  * Creates or gets the Drizzle database connected to Kingdom Financial Cloudflare D1
- * via HTTP API (or fallback local SQLite in test/mock environment if credentials not provided).
+ * via HTTP API. Local dev/CI without credentials uses node:sqlite in-memory fallback.
  */
 export function getDb(): AppDb {
   if (cachedDb) {
@@ -40,7 +48,14 @@ export function getDb(): AppDb {
     return cachedDb;
   }
 
-  // Local fallback: in-memory / local sqlite for offline testing or without cloud credentials
+  // node:sqlite is unavailable during Vercel builds; require D1 HTTP credentials there.
+  if (process.env.VERCEL) {
+    throw new Error(missingD1EnvMessage());
+  }
+
+  // Dynamic require keeps node:sqlite out of the Vercel server bundle.
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { createLocalFallbackDb } = require("./local-fallback") as typeof import("./local-fallback");
   cachedDb = createLocalFallbackDb();
   return cachedDb;
 }
@@ -88,112 +103,11 @@ function createD1HttpDb(config: D1Config): AppDb {
         };
       }
 
-      // Convert object records to row value arrays for drizzle-orm sqlite-proxy
       const rows = results.map((row) => Object.values(row));
       return {
         rows,
         changes,
         meta: { changes },
-      };
-    },
-    { schema },
-  );
-}
-
-// Fallback in-memory database using node:sqlite when Cloudflare D1 credentials are not present
-function createLocalFallbackDb(): AppDb {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { DatabaseSync } = require("node:sqlite");
-  const localDb = new DatabaseSync(":memory:");
-
-  // Initialize schema in memory
-  localDb.exec(`
-    CREATE TABLE IF NOT EXISTS user (
-      id TEXT PRIMARY KEY NOT NULL,
-      name TEXT NOT NULL,
-      email TEXT NOT NULL UNIQUE,
-      email_verified INTEGER DEFAULT 0 NOT NULL,
-      image TEXT,
-      created_at INTEGER NOT NULL,
-      updated_at INTEGER NOT NULL
-    );
-    CREATE TABLE IF NOT EXISTS session (
-      id TEXT PRIMARY KEY NOT NULL,
-      user_id TEXT NOT NULL,
-      token TEXT NOT NULL UNIQUE,
-      expires_at INTEGER NOT NULL,
-      ip_address TEXT,
-      user_agent TEXT,
-      created_at INTEGER NOT NULL,
-      updated_at INTEGER NOT NULL,
-      FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
-    );
-    CREATE TABLE IF NOT EXISTS account (
-      id TEXT PRIMARY KEY NOT NULL,
-      user_id TEXT NOT NULL,
-      account_id TEXT NOT NULL,
-      provider_id TEXT NOT NULL,
-      access_token TEXT,
-      refresh_token TEXT,
-      id_token TEXT,
-      access_token_expires_at INTEGER,
-      refresh_token_expires_at INTEGER,
-      scope TEXT,
-      password TEXT,
-      created_at INTEGER NOT NULL,
-      updated_at INTEGER NOT NULL,
-      FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
-    );
-    CREATE TABLE IF NOT EXISTS verification (
-      id TEXT PRIMARY KEY NOT NULL,
-      identifier TEXT NOT NULL,
-      value TEXT NOT NULL,
-      expires_at INTEGER NOT NULL,
-      created_at INTEGER,
-      updated_at INTEGER
-    );
-    CREATE TABLE IF NOT EXISTS month_plans (
-      year_month TEXT PRIMARY KEY NOT NULL,
-      income_cents INTEGER NOT NULL,
-      spend_threshold_cents INTEGER NOT NULL,
-      savings_target_cents INTEGER NOT NULL
-    );
-    CREATE TABLE IF NOT EXISTS ledger_entries (
-      id TEXT PRIMARY KEY NOT NULL,
-      year_month TEXT NOT NULL,
-      kind TEXT NOT NULL,
-      amount_cents INTEGER NOT NULL,
-      note TEXT NOT NULL,
-      recorded_at TEXT NOT NULL
-    );
-    CREATE TABLE IF NOT EXISTS budget_alerts (
-      id TEXT PRIMARY KEY NOT NULL,
-      year_month TEXT NOT NULL,
-      kind TEXT NOT NULL,
-      status TEXT NOT NULL,
-      triggered_at TEXT NOT NULL,
-      acknowledged_at TEXT
-    );
-  `);
-
-  return drizzleProxy(
-    async (sql, params, method) => {
-      if (method === "run") {
-        const stmt = localDb.prepare(sql);
-        const result = stmt.run(...params);
-        return {
-          rows: [],
-          changes: result.changes,
-          meta: { changes: result.changes },
-        };
-      }
-      const stmt = localDb.prepare(sql);
-      const results = stmt.all(...params) as Record<string, unknown>[];
-      const rows = results.map((row) => Object.values(row));
-      return {
-        rows,
-        changes: rows.length,
-        meta: { changes: rows.length },
       };
     },
     { schema },
